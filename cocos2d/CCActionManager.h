@@ -109,5 +109,9 @@ typedef struct _hashElement
  */
 -(void) resumeTargets:(NSSet *)targetsToResume;
 
+/** Calculates the final time scale effective on the given target, taking into account the time scale of its parent and kCCNodeTagIgnoreTimeScale.
+ */
++ (float)timeScaleForTarget:(id)target;
+
 @end
 

@@ -28,6 +28,7 @@
 
 
 #import "CCActionManager.h"
+#import "CCNode.h"
 #import "ccMacros.h"
 
 @interface NSObject (CCActionManager)
@@ -41,7 +42,6 @@
 -(void) removeActionAtIndex:(NSUInteger)index hashElement:(tHashElement*)element;
 -(void) deleteHashElement:(tHashElement*)element;
 -(void) actionAllocWithHashElement:(tHashElement*)element;
--(float) speedForTarget:(id)target;
 @end
 
 
@@ -309,12 +309,12 @@
 			for( currentTarget->actionIndex = 0; currentTarget->actionIndex < currentTarget->actions->num; currentTarget->actionIndex++) {
 				currentTarget->currentAction = currentTarget->actions->arr[currentTarget->actionIndex];
 				currentTarget->currentActionSalvaged = NO;
-
-                float speed = 1.0f;
-                if (currentTarget->currentAction.tag != kCCActionTagIgnoreSpeed)
-                    speed = [self speedForTarget:currentTarget->target];
+				
+                float timeScale = 1.0f;
+                if (currentTarget->currentAction.tag != kCCActionTagIgnoreTimeScale)
+                    timeScale = [CCActionManager timeScaleForTarget:currentTarget->target];
                 
-				[currentTarget->currentAction step: dt * speed];
+				[currentTarget->currentAction step: dt * timeScale];
 
 				if( currentTarget->currentActionSalvaged ) {
 					// The currentAction told the node to remove it. To prevent the action from
@@ -348,15 +348,19 @@
 	currentTarget = nil;
 }
 
-- (float)speedForTarget:(id)target {
++ (float)timeScaleForTarget:(id)target {
     
-    float speed = 1.0f;
-    if ([target respondsToSelector:@selector(speed)])
-        speed *= [target speed];
+    if ([target respondsToSelector:@selector(tag)])
+        if ([target tag] == kCCNodeTagIgnoreTimeScale)
+            return 1.0f;
+
+    float timeScale = 1.0f;
+    if ([target respondsToSelector:@selector(timeScale)])
+        timeScale *= [target timeScale];
     if ([target respondsToSelector:@selector(parent)])
-        speed *= [self speedForTarget:[target parent]];
+        timeScale *= [self timeScaleForTarget:[target parent]];
     
-    return speed;
+    return timeScale;
 }
 
 @end
