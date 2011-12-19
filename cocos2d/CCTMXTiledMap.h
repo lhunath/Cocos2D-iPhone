@@ -122,19 +122,20 @@ enum
 /** creates a TMX Tiled Map with a TMX file.*/
 +(id) tiledMapWithTMXFile:(NSString*)tmxFile;
 
+/** initializes a TMX Tiled Map with a TMX formatted XML string and a path to TMX resources */
++(id) tiledMapWithXML:(NSString*)tmxString resourcePath:(NSString*)resourcePath;
+
 /** initializes a TMX Tiled Map with a TMX file */
 -(id) initWithTMXFile:(NSString*)tmxFile;
+
+/** initializes a TMX Tiled Map with a TMX formatted XML string and a path to TMX resources */
+-(id) initWithXML:(NSString*)tmxString resourcePath:(NSString*)resourcePath;
 
 /** return the TMXLayer for the specific layer */
 -(CCTMXLayer*) layerNamed:(NSString *)layerName;
 
 /** return the TMXObjectGroup for the secific group */
 -(CCTMXObjectGroup*) objectGroupNamed:(NSString *)groupName;
-
-/** return the TMXObjectGroup for the secific group
- @deprecated Use map#objectGroupNamed instead
- */
--(CCTMXObjectGroup*) groupNamed:(NSString *)groupName DEPRECATED_ATTRIBUTE;
 
 /** return the value for the specific property name */
 -(id) propertyNamed:(NSString *)propertyName;

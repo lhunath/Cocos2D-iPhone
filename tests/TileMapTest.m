@@ -37,6 +37,8 @@ static NSString *transitions[] = {
 	@"TMXResizeTest",
 	@"TMXIsoMoveLayer",
 	@"TMXOrthoMoveLayer",
+	@"TMXOrthoFlipTest",
+	@"TMXOrthoFromXMLTest",
 	@"TMXBug987",
 	@"TMXBug787",
 
@@ -1364,6 +1366,72 @@ Class restartAction()
 @end
 
 #pragma mark -
+#pragma mark TMXOrthoFlipTest
+
+@implementation TMXOrthoFlipTest
+-(id) init
+{
+	if( (self=[super init]) ) {		
+		CCTMXTiledMap *map = [CCTMXTiledMap tiledMapWithTMXFile:@"TileMaps/ortho-rotation-test.tmx"];
+		[self addChild:map z:0 tag:kTagTileMap];
+		
+		CGSize s = map.contentSize;
+		NSLog(@"ContentSize: %f, %f", s.width,s.height);
+		
+		for( CCSpriteBatchNode* child in [map children] ) {
+			[[child texture] setAntiAliasTexParameters];
+		}
+		
+		id action = [CCScaleBy actionWithDuration:2 scale:0.5f];
+		[map runAction:action];
+	}	
+	return self;
+}
+
+-(NSString *) title
+{
+	return @"TMX tile flip test";
+}
+@end
+
+
+#pragma mark -
+#pragma mark TMXOrthoFromXMLTest
+
+@implementation TMXOrthoFromXMLTest
+-(id) init
+{
+	if( (self=[super init]) ) {
+		NSString* resources = @"TileMaps";		// partial paths are OK as resource paths.
+		NSString* file = [resources stringByAppendingPathComponent:@"orthogonal-test1.tmx"];
+		NSError* error = nil;
+		NSString* str = [NSString stringWithContentsOfFile:[CCFileUtils fullPathFromRelativePath:file] encoding:NSUTF8StringEncoding error:&error];
+		NSAssert3(!error, @"Unable to open file %@, %@ (%d)", file, [error localizedDescription], [error code]);
+
+		CCTMXTiledMap *map = [CCTMXTiledMap tiledMapWithXML:str resourcePath:resources];
+		[self addChild:map z:0 tag:kTagTileMap];
+		
+		CGSize s = map.contentSize;
+		NSLog(@"ContentSize: %f, %f", s.width,s.height);
+		
+		for( CCSpriteBatchNode* child in [map children] ) {
+			[[child texture] setAntiAliasTexParameters];
+		}
+		
+		id action = [CCScaleBy actionWithDuration:2 scale:0.5f];
+		[map runAction:action];
+	}	
+	return self;
+}
+
+-(NSString *) title
+{
+	return @"TMX created from XML test";
+}
+@end
+
+
+#pragma mark -
 #pragma mark TMXBug987
 
 @implementation TMXBug987
@@ -1469,6 +1537,11 @@ Class restartAction()
 	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
 	if( ! [director enableRetinaDisplay:YES] )
 		CCLOG(@"Retina Display Not supported");
+	
+	// When in iPad / RetinaDisplay mode, CCFileUtils will append the "-ipad" / "-hd" to all loaded files
+	// If the -ipad  / -hdfile is not found, it will load the non-suffixed version
+	[CCFileUtils setiPadSuffix:@"-ipad"];			// Default on iPad is "" (empty string)
+	[CCFileUtils setRetinaDisplaySuffix:@"-hd"];	// Default on RetinaDisplay is "-hd"
 	
 	// glview is a child of the main window
 	[window addSubview:glView];
