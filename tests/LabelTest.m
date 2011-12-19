@@ -52,6 +52,9 @@ enum {
 	kTagSprite7,
 	kTagSprite8,
 };
+Class nextAction(void);
+Class backAction(void);
+Class restartAction(void);
 
 Class nextAction()
 {
@@ -161,45 +164,45 @@ Class restartAction()
 
 -(id) init
 {
-	if( ![super init] )
-		return nil;
+	if( (self=[super init] ) ) {
 	
-	textureAtlas = [[CCTextureAtlas textureAtlasWithFile: @"atlastest.png" capacity:3] retain];
-	
-	CGSize s = [[CCDirector sharedDirector] winSize];
-
-	//
-	// Notice: u,v tex coordinates are inverted
-	//
-	ccV3F_C4B_T2F_Quad quads[] = {
-		{
-			{{0,0,0},{0,0,255,255},{0.0f,1.0f},},				// bottom left
-			{{s.width,0,0},{0,0,255,0},{1.0f,1.0f},},			// bottom right
-			{{0,s.height,0},{0,0,255,0},{0.0f,0.0f},},			// top left
-			{{s.width,s.height,0},{0,0,255,255},{1.0f,0.0f},},	// top right
-		},		
-		{
-			{{40,40,0},{255,255,255,255},{0.0f,0.2f},},			// bottom left
-			{{120,80,0},{255,0,0,255},{0.5f,0.2f},},			// bottom right
-			{{40,160,0},{255,255,255,255},{0.0f,0.0f},},		// top left
-			{{160,160,0},{0,255,0,255},{0.5f,0.0f},},			// top right
-		},
-
-		{
-			{{s.width/2,40,0},{255,0,0,255},{0.0f,1.0f},},		// bottom left
-			{{s.width,40,0},{0,255,0,255},{1.0f,1.0f},},		// bottom right
-			{{s.width/2-50,200,0},{0,0,255,255},{0.0f,0.0f},},		// top left
-			{{s.width,100,0},{255,255,0,255},{1.0f,0.0f},},		// top right
-		},
+		textureAtlas = [[CCTextureAtlas textureAtlasWithFile: @"atlastest.png" capacity:3] retain];
 		
-	};
-	
-	
-	for( int i=0;i<3;i++) {
-		[textureAtlas updateQuad:&quads[i] atIndex:i];
+		CGSize s = [[CCDirector sharedDirector] winSize];
+
+		//
+		// Notice: u,v tex coordinates are inverted
+		//
+		ccV3F_C4B_T2F_Quad quads[] = {
+			{
+				{{0,0,0},{0,0,255,255},{0.0f,1.0f},},				// bottom left
+				{{s.width,0,0},{0,0,255,0},{1.0f,1.0f},},			// bottom right
+				{{0,s.height,0},{0,0,255,0},{0.0f,0.0f},},			// top left
+				{{s.width,s.height,0},{0,0,255,255},{1.0f,0.0f},},	// top right
+			},		
+			{
+				{{40,40,0},{255,255,255,255},{0.0f,0.2f},},			// bottom left
+				{{120,80,0},{255,0,0,255},{0.5f,0.2f},},			// bottom right
+				{{40,160,0},{255,255,255,255},{0.0f,0.0f},},		// top left
+				{{160,160,0},{0,255,0,255},{0.5f,0.0f},},			// top right
+			},
+
+			{
+				{{s.width/2,40,0},{255,0,0,255},{0.0f,1.0f},},		// bottom left
+				{{s.width,40,0},{0,255,0,255},{1.0f,1.0f},},		// bottom right
+				{{s.width/2-50,200,0},{0,0,255,255},{0.0f,0.0f},},		// top left
+				{{s.width,100,0},{255,255,0,255},{1.0f,0.0f},},		// top right
+			},
+			
+		};
+		
+		
+		for( int i=0;i<3;i++) {
+			[textureAtlas updateQuad:&quads[i] atIndex:i];
+		}
+			
+	//	[textureAtlas removeQuadAtIndex:0];
 	}
-		
-//	[textureAtlas removeQuadAtIndex:0];
 
 	return self;
 }
@@ -345,10 +348,11 @@ Class restartAction()
 #pragma mark Example Atlas3
 
 /*
- * Use any of these editors to generate BMFont labels:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 @implementation Atlas3
 -(id) init
@@ -428,10 +432,11 @@ Class restartAction()
 #pragma mark Example Atlas4
 
 /*
- * Use any of these editors to generate BMFont labels:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 
 @implementation Atlas4
@@ -522,10 +527,11 @@ Class restartAction()
 #pragma mark Example Atlas5
 
 /*
- * Use any of these editors to generate BMFont labels:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 
 @implementation Atlas5
@@ -561,10 +567,11 @@ Class restartAction()
 #pragma mark Example Atlas6
 
 /*
- * Use any of these editors to generate BMFont label:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 
 @implementation Atlas6
@@ -611,10 +618,11 @@ Class restartAction()
 #pragma mark Example AtlasBitmapColor
 
 /*
- * Use any of these editors to generate BMFont label:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 
 @implementation AtlasBitmapColor
@@ -665,10 +673,11 @@ Class restartAction()
 #pragma mark Example AtlasFastBitmap
 
 /*
- * Use any of these editors to generate BMFont label:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 
 @implementation AtlasFastBitmap
@@ -708,10 +717,11 @@ Class restartAction()
 #pragma mark BitmapFontMultiLine
 
 /*
- * Use any of these editors to generate BMFont label:
- *   http://www.n4te.com/hiero/hiero.jnlp
- *   http://slick.cokeandcode.com/demos/hiero.jnlp
- *   http://www.angelcode.com/products/bmfont/
+ * Use any of these editors to generate BMFonts:
+ *   http://glyphdesigner.71squared.com/ (Commercial, Mac OS X)
+ *   http://www.n4te.com/hiero/hiero.jnlp (Free, Java)
+ *   http://slick.cokeandcode.com/demos/hiero.jnlp (Free, Java)
+ *   http://www.angelcode.com/products/bmfont/ (Free, Windows only)
  */
 
 @implementation BitmapFontMultiLine
@@ -837,7 +847,7 @@ Class restartAction()
 
 -(NSString *) subtitle
 {
-	return @"3 empty labels: LabelAtlas, Label and BitmapFontAtlas";
+	return @"3 empty labels: LabelAtlas, LabelTTF and LabelBMFont";
 }
 
 @end
@@ -1100,34 +1110,55 @@ Class restartAction()
 
 - (void) applicationDidFinishLaunching:(UIApplication*)application
 {
-	// CC_DIRECTOR_INIT()
-	//
-	// 1. Initializes an EAGLView with 0-bit depth format, and RGB565 render buffer
-	// 2. EAGLView multiple touches: disabled
-	// 3. creates a UIWindow, and assign it to the "window" var (it must already be declared)
-	// 4. Parents EAGLView to the newly created window
-	// 5. Creates Display Link Director
-	// 5a. If it fails, it will use an NSTimer director
-	// 6. It will try to run at 60 FPS
-	// 7. Display FPS: NO
-	// 8. Device orientation: Portrait
-	// 9. Connects the director to the EAGLView
-	//
-	CC_DIRECTOR_INIT();
+	// Init the window
+	window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
-	// Obtain the shared director in order to...
+	// must be called before any othe call to the director
+	[CCDirector setDirectorType:kCCDirectorTypeDisplayLink];
+	//	[CCDirector setDirectorType:kCCDirectorTypeThreadMainLoop];
+	
+	// before creating any layer, set the landscape mode
 	CCDirector *director = [CCDirector sharedDirector];
 	
-	// Sets landscape mode
+	// landscape orientation
 	[director setDeviceOrientation:kCCDeviceOrientationLandscapeLeft];
 	
-	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
-	if( ! [director enableRetinaDisplay:YES] )
-		CCLOG(@"Retina Display Not supported");
+	// set FPS at 60
+	[director setAnimationInterval:1.0/60];
+	
+	// When in iPad / RetinaDisplay mode, CCFileUtils will append the "-ipad" / "-hd" to all loaded files
+	// If the -ipad  / -hdfile is not found, it will load the non-suffixed version
+	[CCFileUtils setiPadSuffix:@"-ipad"];			// Default on iPad is "" (empty string)
+	[CCFileUtils setRetinaDisplaySuffix:@"-hd"];	// Default on RetinaDisplay is "-hd"
 	
 	// Turn on display FPS
 	[director setDisplayFPS:YES];
 	
+	// Create an EAGLView with a RGB8 color buffer, and a depth buffer of 0 without multisampling
+	EAGLView *glView = [EAGLView viewWithFrame:[window bounds]
+								   pixelFormat:kEAGLColorFormatRGBA8
+								   depthFormat:0];
+	
+	// attach the openglView to the director
+	[director setOpenGLView:glView];
+	
+	// 2D projection
+	[director setProjection:kCCDirectorProjection2D];
+	
+	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
+	[director enableRetinaDisplay:YES];
+	
+	// make the OpenGLView a child of the main window
+	[window addSubview:glView];
+	
+	// make main window visible
+	[window makeKeyAndVisible];	
+	
+	// Default texture format for PNG/BMP/TIFF/JPEG/GIF images
+	// It can be RGBA8888, RGBA4444, RGB5_A1, RGB565
+	// You can change anytime.
+	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];	
+		
 	CCScene *scene = [CCScene node];
 	[scene addChild: [nextAction() node]];
 

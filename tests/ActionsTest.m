@@ -12,6 +12,10 @@ enum {
 	kTagAnimationDance = 1,
 };
 
+Class nextAction(void);
+Class backAction(void);
+Class restartAction(void);
+
 static int sceneIdx=-1;
 static NSString *transitions[] = {
 	@"ActionManual",
@@ -349,19 +353,19 @@ Class restartAction()
 	
 	CGSize boxSize = CGSizeMake(100.0f, 100.0f);
 	
-	CCColorLayer *box = [CCColorLayer layerWithColor:ccc4(255,255,0,255)];
+	CCLayerColor *box = [CCLayerColor layerWithColor:ccc4(255,255,0,255)];
 	box.anchorPoint = ccp(0,0);
 	box.position = ccp(190,110);
 	box.contentSize = boxSize;
 	
 	static CGFloat markerside = 10.0f;
-	CCColorLayer *uL = [CCColorLayer layerWithColor:ccc4(255,0,0,255)];
+	CCLayerColor *uL = [CCLayerColor layerWithColor:ccc4(255,0,0,255)];
 	[box addChild:uL];
 	uL.contentSize = CGSizeMake(markerside, markerside);
 	uL.position = ccp(0.f, boxSize.height-markerside);
 	uL.anchorPoint = ccp(0,0);
 	
-	CCColorLayer *uR = [CCColorLayer layerWithColor:ccc4(0,0,255,255)];
+	CCLayerColor *uR = [CCLayerColor layerWithColor:ccc4(0,0,255,255)];
 	[box addChild:uR];
 	uR.contentSize = CGSizeMake(markerside, markerside);
 	uR.position = ccp(boxSize.width-markerside, boxSize.height-markerside);
@@ -1143,6 +1147,11 @@ Class restartAction()
 	// It can be RGBA8888, RGBA4444, RGB5_A1, RGB565
 	// You can change anytime.
 	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];
+	
+	// When in iPad / RetinaDisplay mode, CCFileUtils will append the "-ipad" / "-hd" to all loaded files
+	// If the -ipad  / -hdfile is not found, it will load the non-suffixed version
+	[CCFileUtils setiPadSuffix:@"-ipad"];			// Default on iPad is "" (empty string)
+	[CCFileUtils setRetinaDisplaySuffix:@"-hd"];	// Default on RetinaDisplay is "-hd"
 	
 	CCScene *scene = [CCScene node];
 	[scene addChild: [nextAction() node]];

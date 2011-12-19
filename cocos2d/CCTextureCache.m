@@ -35,7 +35,7 @@
 #import "Support/CCFileUtils.h"
 #import "CCDirector.h"
 #import "ccConfig.h"
-#import "UIImage_Scaling.h"
+#import "ccTypes.h"
 
 // needed for CCCallFuncO in Mac-display_link version
 #import "CCActionManager.h"
@@ -54,9 +54,9 @@ static NSOpenGLContext *auxGLcontext = nil;
 	id			target_;
 	id			data_;
 }
-@property	(readwrite,assign)	SEL			selector;
-@property	(readwrite,retain)	id			target;
-@property	(readwrite,retain)	id			data;
+@property	(nonatomic,readwrite,assign)	SEL			selector;
+@property	(nonatomic,readwrite,retain)	id			target;
+@property	(nonatomic,readwrite,retain)	id			data;
 @end
 
 @implementation CCAsyncObject
@@ -219,7 +219,9 @@ static CCTextureCache *sharedTextureCache;
 	
 	CCTexture2D * tex;
 	
-	path = ccRemoveHDSuffixFromFile(path);
+#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+	path = [CCFileUtils removeSuffixFromFile:path];
+#endif
 	
 	if( (tex=[textures_ objectForKey: path] ) ) {
 		[target performSelector:selector withObject:tex];
@@ -248,7 +250,9 @@ static CCTextureCache *sharedTextureCache;
 	[dictLock_ lock];
 	
 	// remove possible -HD suffix to prevent caching the same image twice (issue #1040)
-	path = ccRemoveHDSuffixFromFile( path );
+#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+	path = [CCFileUtils removeSuffixFromFile: path];
+#endif
 
 	tex=[textures_ objectForKey: path];
 	
@@ -268,24 +272,14 @@ static CCTextureCache *sharedTextureCache;
 				  ( [lowerCase hasSuffix:@".jpg"] || [lowerCase hasSuffix:@".jpeg"] ) 
 				 ) {
 			// convert jpg to png before loading the texture
-            BOOL scaleToHD = NO;
-			NSString *fullpath = [CCFileUtils fullPathFromRelativePath: path ];
-#if CC_IS_RETINA_DISPLAY_SUPPORTED
-            if( CC_CONTENT_SCALE_FACTOR() == 2 ) {
-                NSString *fullpathHD = [CCFileUtils getDoubleResolutionImage:fullpath];
-                if (fullpathHD)
-                    fullpath = fullpathHD;
-                else
-                    // Only SD version available for this image, scale it up.
-                    scaleToHD = YES;
-            }
-#endif // CC_IS_RETINA_DISPLAY_SUPPORTED
 			
+			ccResolutionType resolution;
+			NSString *fullpath = [CCFileUtils fullPathFromRelativePath: path resolutionType:&resolution];
+						
 			UIImage *jpg = [[UIImage alloc] initWithContentsOfFile:fullpath];
-			UIImage *png = [[[UIImage alloc] initWithData:UIImagePNGRepresentation(jpg)] autorelease];
-            if (scaleToHD)
-                png = [png imageByScalingAndCroppingToSize:CGSizeApplyAffineTransform(png.size, CGAffineTransformMakeScale(2, 2))];
-			tex = [ [CCTexture2D alloc] initWithImage: png ];
+			UIImage *png = [[UIImage alloc] initWithData:UIImagePNGRepresentation(jpg)];
+			tex = [ [CCTexture2D alloc] initWithImage:png resolutionType:resolution];
+			[png release];
 			[jpg release];
 			
 			if( tex )
@@ -299,24 +293,12 @@ static CCTextureCache *sharedTextureCache;
 		
 		else {
 			
-			// prevents overloading the autorelease pool
-            BOOL scaleToHD = NO;
-			NSString *fullpath = [CCFileUtils fullPathFromRelativePath: path ];
-#if CC_IS_RETINA_DISPLAY_SUPPORTED
-            if( CC_CONTENT_SCALE_FACTOR() == 2 ) {
-                NSString *fullpathHD = [CCFileUtils getDoubleResolutionImage:fullpath];
-                if (fullpathHD)
-                    fullpath = fullpathHD;
-                else
-                    // Only SD version available for this image, scale it up.
-                    scaleToHD = YES;
-            }
-#endif // CC_IS_RETINA_DISPLAY_SUPPORTED
+			ccResolutionType resolution;
+			NSString *fullpath = [CCFileUtils fullPathFromRelativePath:path resolutionType:&resolution];
 
-			UIImage *image = [[ [UIImage alloc] initWithContentsOfFile: fullpath ] autorelease];
-            if (scaleToHD)
-                image = [image imageByScalingAndCroppingToSize:CGSizeApplyAffineTransform(image.size, CGAffineTransformMakeScale(2, 2))];
-			tex = [ [CCTexture2D alloc] initWithImage: image ];
+			UIImage *image = [ [UIImage alloc] initWithContentsOfFile: fullpath ];
+			tex = [ [CCTexture2D alloc] initWithImage:image resolutionType:resolution];
+			[image release];
 			
 			if( tex )
 				[textures_ setObject: tex forKey:path];
@@ -383,7 +365,7 @@ static CCTextureCache *sharedTextureCache;
 #ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
 	// prevents overloading the autorelease pool
 	UIImage *image = [[UIImage alloc] initWithCGImage:imageref];
-	tex = [[CCTexture2D alloc] initWithImage: image];
+	tex = [[CCTexture2D alloc] initWithImage:image resolutionType:kCCResolutionUnknown];
 	[image release];
 
 #elif defined(__MAC_OS_X_VERSION_MAX_ALLOWED)
@@ -448,6 +430,7 @@ static CCTextureCache *sharedTextureCache;
 @implementation CCTextureCache (PVRSupport)
 
 #ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+// XXX deprecated
 -(CCTexture2D*) addPVRTCImage:(NSString*)path bpp:(int)bpp hasAlpha:(BOOL)alpha width:(int)w
 {
 	NSAssert(path != nil, @"TextureCache: fileimage MUST not be nill");
@@ -456,7 +439,7 @@ static CCTextureCache *sharedTextureCache;
 	CCTexture2D * tex;
 	
 	// remove possible -HD suffix to prevent caching the same image twice (issue #1040)
-	path = ccRemoveHDSuffixFromFile( path );
+	path = [CCFileUtils removeSuffixFromFile: path];
 
 	if( (tex=[textures_ objectForKey: path] ) ) {
 		return tex;
@@ -485,16 +468,15 @@ static CCTextureCache *sharedTextureCache;
 	CCTexture2D * tex;
 	
 	// remove possible -HD suffix to prevent caching the same image twice (issue #1040)
-	path = ccRemoveHDSuffixFromFile( path );
+#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+	path = [CCFileUtils removeSuffixFromFile: path];
+#endif
 
 	if( (tex=[textures_ objectForKey: path] ) ) {
 		return tex;
 	}
 	
-	// Split up directory and filename
-	NSString *fullpath = [CCFileUtils fullPathFromRelativePath:path];
-	
-	tex = [[CCTexture2D alloc] initWithPVRFile: fullpath];
+	tex = [[CCTexture2D alloc] initWithPVRFile: path];
 	if( tex )
 		[textures_ setObject: tex forKey:path];
 	else
@@ -516,7 +498,7 @@ static CCTextureCache *sharedTextureCache;
 		CCTexture2D* tex = [textures_ objectForKey:texKey];
 		NSUInteger bpp = [tex bitsPerPixelForFormat];
 		// Each texture takes up width * height * bytesPerPixel bytes.
-		NSUInteger bytes = tex.pixelsWide * tex.pixelsWide * bpp / 8;
+		NSUInteger bytes = tex.pixelsWide * tex.pixelsHigh * bpp / 8;
 		totalBytes += bytes;
 		count++;
 		CCLOG( @"cocos2d: \"%@\" rc=%lu id=%lu %lu x %lu @ %ld bpp => %lu KB",

@@ -33,12 +33,12 @@
 		CCLayerColor *sprite_a = [CCLayerColor layerWithColor:ccc4(255, 0, 0, 255) width:700 height:700];
 		sprite_a.anchorPoint = ccp(0.5f, 0.5f);
 		[sprite_a setIsRelativeAnchorPoint:YES];
-		sprite_a.position = ccp(0.0, s.height/2);
+		sprite_a.position = ccp(0.0f, s.height/2);
 		[self addChild:sprite_a];
 		
 		[sprite_a runAction:[CCRepeatForever actionWithAction:[CCSequence actions:
-															   [CCMoveTo actionWithDuration:1.0 position:ccp(1024.0, 384.0)],
-															   [CCMoveTo actionWithDuration:1.0 position:ccp(0.0, 384.0)],
+															   [CCMoveTo actionWithDuration:1.0f position:ccp(1024, 384)],
+															   [CCMoveTo actionWithDuration:1.0f position:ccp(0, 384)],
 															   nil]]];
 		
 		CCLayerColor *sprite_b = [CCLayerColor layerWithColor:ccc4(0, 0, 255, 255) width:400 height:400];
@@ -51,11 +51,11 @@
 																				   fontName:@"Helvetica"
 																				   fontSize:24]
 														  block:^(id sender){
-															  [[CCDirector sharedDirector] replaceScene:[CCTransitionPageTurn transitionWithDuration:1.0 scene:[Bug1159 scene]]];
+															  [[CCDirector sharedDirector] replaceScene:[CCTransitionPageTurn transitionWithDuration:1.0f scene:[Bug1159 scene]]];
 														  }
 								  ];
 		CCMenu *menu = [CCMenu menuWithItems:label, nil];
-		menu.position = ccp(950.0, 50.0);
+		menu.position = ccp(950.0f, 50.0f);
 		[self addChild:menu];
 	}
 	return self;
@@ -101,7 +101,7 @@
 	// Default texture format for PNG/BMP/TIFF/JPEG/GIF images
 	// It can be RGBA8888, RGBA4444, RGB5_A1, RGB565
 	// You can change anytime.
-	[CCTexture2D setDefaultAlphaPixelFormat:kTexture2DPixelFormat_RGBA8888];
+	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];
 	
 	[director runWithScene:[Bug1159 scene] ];
 }
@@ -131,7 +131,7 @@
 
 - (void) dealloc
 {
-	[window dealloc];
+	[window release];
 	[super dealloc];
 }
 

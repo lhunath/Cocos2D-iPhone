@@ -183,7 +183,9 @@ CGFloat	__ccContentScaleFactor = 1;
 	
 	glPopMatrix();
 	
-	[openGLView_ swapBuffers];
+	totalFrames_++;
+
+	[openGLView_ swapBuffers];	
 }
 
 -(void) setProjection:(ccDirectorProjection)projection
@@ -283,7 +285,10 @@ CGFloat	__ccContentScaleFactor = 1;
 		isContentScaleSupported_ = YES;
 	}
 	else
-		CCLOG(@"cocos2d: 'setContentScaleFactor:' is not supported on this device");
+	{
+		CCLOG(@"cocos2d: WARNING: calling setContentScaleFactor on iOS < 4. Using fallback mechanism");		
+		isContentScaleSupported_ = NO;
+	}
 }
 
 -(BOOL) enableRetinaDisplay:(BOOL)enabled
@@ -547,6 +552,8 @@ CGFloat	__ccContentScaleFactor = 1;
 
 - (void) startAnimation
 {
+	NSAssert( isRunning == NO, @"isRunning must be NO. Calling startAnimation twice?");
+
 	// XXX:
 	// XXX: release autorelease objects created
 	// XXX: between "use fast director" and "runWithScene"
@@ -633,7 +640,8 @@ CGFloat	__ccContentScaleFactor = 1;
 
 - (void) startAnimation
 {
-	
+	NSAssert( isRunning == NO, @"isRunning must be NO. Calling startAnimation twice?");
+
 	if ( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: ThreadedFastDirector: Error on gettimeofday");
 	}
@@ -694,6 +702,8 @@ CGFloat	__ccContentScaleFactor = 1;
 
 - (void) startAnimation
 {
+	NSAssert( displayLink == nil, @"displayLink must be nil. Calling startAnimation twice?");
+
 	if ( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: DisplayLinkDirector: Error on gettimeofday");
 	}

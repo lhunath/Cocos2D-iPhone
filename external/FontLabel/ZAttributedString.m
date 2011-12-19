@@ -459,7 +459,8 @@
 	if (((ZAttributeRun *)[_attributes lastObject]).index < NSMaxRange(range)) {
 		NSRange subrange = NSMakeRange(first, [_attributes count] - first);
 		if (NSMaxRange(range) < [_buffer length]) {
-			ZAttributeRun *newRun = [[ZAttributeRun alloc] initWithIndex:NSMaxRange(range) attributes:[(ZAttributeRun *)[_attributes lastObject] attributes]];
+			ZAttributeRun *newRun = [[ZAttributeRun alloc] initWithIndex:NSMaxRange(range)
+															  attributes:(NSDictionary*)[(ZAttributeRun *)[_attributes lastObject] attributes]];
 			[_attributes addObject:newRun];
 			[newRun release];
 		}

@@ -42,7 +42,7 @@
  The "correct" way to prevent artifacts is by using the spritesheet-artifact-fixer.py or a similar tool.
  
  Affected nodes:
-	- CCSprite / CCSpriteBatchNode and subclasses: CCBitmapFontAtlas, CCTMXTiledMap
+	- CCSprite / CCSpriteBatchNode and subclasses: CCLabelBMFont, CCTMXTiledMap
 	- CCLabelAtlas
 	- CCQuadParticleSystem
 	- CCTileMap
@@ -168,7 +168,7 @@
  Using the translate/rotate/scale requires 5 GL calls.
  But computing the Affine matrix is relative expensive.
  But according to performance tests, Affine matrix performs better.
- This parameter doesn't affect SpriteSheet nodes.
+ This parameter doesn't affect CCSpriteBatchNode nodes.
  
  To enable set it to a value different than 0. Enabled by default.
 
@@ -208,36 +208,15 @@
  
  To enable set it to a value different than 0. Disabled by default.
 
+ This value governs only the PNG, GIF, BMP, images.
+ This value DOES NOT govern the PVR (PVR.GZ, PVR.CCZ) files. If NPOT PVR is loaded, then it will create an NPOT texture ignoring this value.
+ 
+ @deprecated This value will be removed in 1.1 and NPOT textures will be loaded by default if the device supports it.
+
  @since v0.99.2
  */
 #ifndef CC_TEXTURE_NPOT_SUPPORT
 #define CC_TEXTURE_NPOT_SUPPORT 0
-#endif
-
-/** @def CC_RETINA_DISPLAY_SUPPORT
- If enabled, cocos2d supports retina display. 
- For performance reasons, it's recommended disable it in games without retina display support, like iPad only games.
- 
- To enable set it to 1. Use 0 to disable it. Enabled by default.
- 
- @since v0.99.5
- */
-#ifndef CC_RETINA_DISPLAY_SUPPORT
-#define CC_RETINA_DISPLAY_SUPPORT 1
-#endif
-
-/** @def CC_RETINA_DISPLAY_FILENAME_SUFFIX
- It's the suffix that will be appended to the files in order to load "retina display" images.
-
- On an iPhone4 with Retina Display support enabled, the file @"sprite-hd.png" will be loaded instead of @"sprite.png".
- If the file doesn't exist it will use the non-retina display image.
- 
- Platforms: Only used on Retina Display devices like iPhone 4.
- 
- @since v0.99.5
- */ 
-#ifndef CC_RETINA_DISPLAY_FILENAME_SUFFIX
-#define CC_RETINA_DISPLAY_FILENAME_SUFFIX @"-hd"
 #endif
 
 /** @def CC_USE_LA88_LABELS_ON_NEON_ARCH
@@ -259,7 +238,10 @@
  If enabled, all subclasses of CCSprite will draw a bounding box
  Useful for debugging purposes only. It is recommened to leave it disabled.
  
- To enable set it to a value different than 0. Disabled by default.
+ To enable set it to a value different than 0. Disabled by default:
+ 0 -- disabled
+ 1 -- draw bounding box
+ 2 -- draw texture box
  */
 #ifndef CC_SPRITE_DEBUG_DRAW
 #define CC_SPRITE_DEBUG_DRAW 0
@@ -305,22 +287,3 @@
 #ifndef CC_ENABLE_PROFILERS
 #define CC_ENABLE_PROFILERS 0
 #endif
-
-//
-// DON'T edit this macro.
-//
-#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
-
-#if CC_RETINA_DISPLAY_SUPPORT
-#define CC_IS_RETINA_DISPLAY_SUPPORTED 1
-#else
-#define CC_IS_RETINA_DISPLAY_SUPPORTED 0
-#endif
-
-#elif __MAC_OS_X_VERSION_MAX_ALLOWED
-
-#define CC_IS_RETINA_DISPLAY_SUPPORTED 0
-
-#endif
-
-

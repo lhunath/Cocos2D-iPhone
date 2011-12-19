@@ -18,6 +18,10 @@ enum {
 	kTagSequence,
 };
 
+Class nextAction(void);
+Class backAction(void);
+Class restartAction(void);
+
 static int sceneIdx=-1;
 static NSString *transitions[] = {
 			@"CrashTest",
@@ -62,33 +66,33 @@ Class restartAction()
 @implementation ActionManagerTest
 -(id) init
 {
-	[super init];
+	if( (self=[super init]) ) {
 
-
-	CGSize s = [[CCDirector sharedDirector] winSize];
+		CGSize s = [[CCDirector sharedDirector] winSize];
+			
+		CCLabelTTF* label = [CCLabelTTF labelWithString:[self title] fontName:@"Arial" fontSize:32];
+		[self addChild: label z:1];
+		[label setPosition: ccp(s.width/2, s.height-50)];
 		
-	CCLabelTTF* label = [CCLabelTTF labelWithString:[self title] fontName:@"Arial" fontSize:32];
-	[self addChild: label z:1];
-	[label setPosition: ccp(s.width/2, s.height-50)];
-	
-	NSString *subtitle = [self subtitle];
-	if( subtitle ) {
-		CCLabelTTF* l = [CCLabelTTF labelWithString:subtitle fontName:@"Thonburi" fontSize:16];
-		[self addChild:l z:1];
-		[l setPosition:ccp(s.width/2, s.height-80)];
-	}	
-	
-	CCMenuItemImage *item1 = [CCMenuItemImage itemFromNormalImage:@"b1.png" selectedImage:@"b2.png" target:self selector:@selector(backCallback:)];
-	CCMenuItemImage *item2 = [CCMenuItemImage itemFromNormalImage:@"r1.png" selectedImage:@"r2.png" target:self selector:@selector(restartCallback:)];
-	CCMenuItemImage *item3 = [CCMenuItemImage itemFromNormalImage:@"f1.png" selectedImage:@"f2.png" target:self selector:@selector(nextCallback:)];
-	
-	CCMenu *menu = [CCMenu menuWithItems:item1, item2, item3, nil];
-	
-	menu.position = CGPointZero;
-	item1.position = ccp( s.width/2 - 100,30);
-	item2.position = ccp( s.width/2, 30);
-	item3.position = ccp( s.width/2 + 100,30);
-	[self addChild: menu z:1];	
+		NSString *subtitle = [self subtitle];
+		if( subtitle ) {
+			CCLabelTTF* l = [CCLabelTTF labelWithString:subtitle fontName:@"Thonburi" fontSize:16];
+			[self addChild:l z:1];
+			[l setPosition:ccp(s.width/2, s.height-80)];
+		}	
+		
+		CCMenuItemImage *item1 = [CCMenuItemImage itemFromNormalImage:@"b1.png" selectedImage:@"b2.png" target:self selector:@selector(backCallback:)];
+		CCMenuItemImage *item2 = [CCMenuItemImage itemFromNormalImage:@"r1.png" selectedImage:@"r2.png" target:self selector:@selector(restartCallback:)];
+		CCMenuItemImage *item3 = [CCMenuItemImage itemFromNormalImage:@"f1.png" selectedImage:@"f2.png" target:self selector:@selector(nextCallback:)];
+		
+		CCMenu *menu = [CCMenu menuWithItems:item1, item2, item3, nil];
+		
+		menu.position = CGPointZero;
+		item1.position = ccp( s.width/2 - 100,30);
+		item2.position = ccp( s.width/2, 30);
+		item3.position = ccp( s.width/2 + 100,30);
+		[self addChild: menu z:1];
+	}
 
 	return self;
 }
@@ -380,6 +384,11 @@ Class restartAction()
 	if( ! [director enableRetinaDisplay:YES] )
 		CCLOG(@"Retina Display Not supported");
 	
+	// When in iPad / RetinaDisplay mode, CCFileUtils will append the "-ipad" / "-hd" to all loaded files
+	// If the -ipad  / -hdfile is not found, it will load the non-suffixed version
+	[CCFileUtils setiPadSuffix:@"-ipad"];			// Default on iPad is "" (empty string)
+	[CCFileUtils setRetinaDisplaySuffix:@"-hd"];	// Default on RetinaDisplay is "-hd"
+
 	CCScene *scene = [CCScene node];
 	[scene addChild: [nextAction() node]];
 			 
