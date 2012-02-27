@@ -35,7 +35,7 @@
 #import "Support/CCFileUtils.h"
 #import "CCDirector.h"
 #import "ccConfig.h"
-#import "UIImage_Scaling.h"
+#import "UIImage_PearlScaling.h"
 
 // needed for CCCallFuncO in Mac-display_link version
 #import "CCActionManager.h"
