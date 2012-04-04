@@ -35,7 +35,7 @@
 #import "Support/CCFileUtils.h"
 #import "CCDirector.h"
 #import "ccConfig.h"
-#import "UIImage_PearlScaling.h"
+#import "ccTypes.h"
 
 // needed for CCCallFuncO in Mac-display_link version
 #import "CCActionManager.h"
@@ -312,24 +312,12 @@ static CCTextureCache *sharedTextureCache;
 		// Only in Mac
 #elif defined(__MAC_OS_X_VERSION_MAX_ALLOWED)
 		else {
-            BOOL scaleToHD = NO;
 			NSString *fullpath = [CCFileUtils fullPathFromRelativePath: path ];
-#if CC_IS_RETINA_DISPLAY_SUPPORTED
-            if( CC_CONTENT_SCALE_FACTOR() == 2 ) {
-                NSString *fullpathHD = [CCFileUtils getDoubleResolutionImage:fullpath];
-                if (fullpathHD)
-                    fullpath = fullpathHD;
-                else
-                    // Only SD version available for this image, scale it up.
-                    scaleToHD = YES;
-            }
-#endif // CC_IS_RETINA_DISPLAY_SUPPORTED
 
 			NSData *data = [[NSData alloc] initWithContentsOfFile:fullpath];
 			NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:data];
 			tex = [ [CCTexture2D alloc] initWithImage:[image CGImage]];
-            if (scaleToHD)
-                tex.scale = 2;
+			
 			[data release];
 			[image release];
 
