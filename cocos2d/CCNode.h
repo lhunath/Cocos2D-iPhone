@@ -37,6 +37,7 @@
 
 enum {
 	kCCNodeTagInvalid = -1,
+    kCCNodeTagIgnoreTimeScale = -2,
 };
 
 @class CCCamera;
@@ -289,6 +290,10 @@ enum {
  */
 -(void) onExit;
 
+/** callback that is called every time the CCNode leaves the 'stage'.
+ If the CCNode leaves the 'stage' with a transition, this callback is called when the transition starts.
+ */
+-(void) onExitTransitionDidStart;
 
 // composition: ADD
 

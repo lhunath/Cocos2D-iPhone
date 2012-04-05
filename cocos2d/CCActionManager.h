@@ -109,5 +109,7 @@ typedef struct _hashElement
  */
 -(void) resumeTarget:(id)target;
 
++ (float)timeScaleForTarget:(id)target;
+
 @end
 

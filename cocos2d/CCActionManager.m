@@ -28,9 +28,16 @@
 
 
 #import "CCActionManager.h"
+#import "CCNode.h"
 #import "CCScheduler.h"
 #import "ccMacros.h"
 
+@interface NSObject (CCActionManager)
+
+- (float)speed;
+- (id)parent;
+
+@end
 
 //
 // singleton stuff
@@ -309,7 +316,11 @@ static CCActionManager *sharedManager_ = nil;
 				currentTarget->currentAction = currentTarget->actions->arr[currentTarget->actionIndex];
 				currentTarget->currentActionSalvaged = NO;
 				
-				[currentTarget->currentAction step: dt];
+                float timeScale = 1.0f;
+                if (currentTarget->currentAction.tag != kCCActionTagIgnoreTimeScale)
+                    timeScale = [CCActionManager timeScaleForTarget:currentTarget->target];
+                
+				[currentTarget->currentAction step: dt * timeScale];
 
 				if( currentTarget->currentActionSalvaged ) {
 					// The currentAction told the node to remove it. To prevent the action from
@@ -342,4 +353,20 @@ static CCActionManager *sharedManager_ = nil;
 	// issue #635
 	currentTarget = nil;
 }
+
++ (float)timeScaleForTarget:(id)target {
+    
+    if ([target respondsToSelector:@selector(tag)])
+        if ([target tag] == kCCNodeTagIgnoreTimeScale)
+            return 1.0f;
+
+    float timeScale = 1.0f;
+    if ([target respondsToSelector:@selector(timeScale)])
+        timeScale *= [target timeScale];
+    if ([target respondsToSelector:@selector(parent)])
+        timeScale *= [self timeScaleForTarget:[target parent]];
+    
+    return timeScale;
+}
+
 @end
