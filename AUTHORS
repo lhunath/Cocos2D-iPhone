@@ -9,8 +9,10 @@ cocos2d logos by Michael Heald (http://www.fullyillustrated.com)
 cocos2d for iPhone authors for v1.1
 -----------------------------------
 
-Lead Developers:
+Lead Developer:
 	Marco Tillemans (http://www.welcometothefabrik.com/)
+
+Former Lead Developer:
 	Ricardo Quesada (http://www.cocos2d-iphone.org)
 
 
@@ -59,6 +61,8 @@ Contributors (alphabetically ordered):
 	EAGLView destroys and recreates all OpenGL buffers correctly
 	TileMap: flipped tiles can be changed during runtime
 
+* Mark Haylock
+    Fix for CCParticleSystem to unschedule update method when deallocated
 * Martin 
 	Co-author of animated particle system
 
@@ -80,6 +84,7 @@ Contributors (alphabetically ordered):
 * Samuel J. Grabski http://www.sg7.com
 	Created a new touchdispatcher implementation
     New touchdispatcher performance tests
+    Fix for touchdispatcher
     
 * Scott Lembcke (AKA slembcke) (http://chipmunk-physics.net/)
 	Improved ARC compatiblity code
@@ -90,6 +95,10 @@ Contributors (alphabetically ordered):
 * Shakthi:
 	Added CCNode#onExitTransitionDidStart method
 	Fixed fading background music issue
+    Made CCLOG a bit more verbose
+    
+* Skyhawk (http://www.hkasoftware.com) 
+    Fix for addFrame method in CCAnimation
 
 * slycrel (http://geopherlite.blogspot.com/)
 	Added support for flipped tiles in TMX maps. Also added test case
