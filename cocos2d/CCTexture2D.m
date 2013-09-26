@@ -1295,8 +1295,8 @@ static BOOL _PVRHaveAlphaPremultiplied = NO;
 
 -(void) setTexParameters: (ccTexParams*) texParams
 {
-	NSAssert( (_width == ccNextPOT(_width) && _height == ccNextPOT(_height)) ||
-				(texParams->wrapS == GL_CLAMP_TO_EDGE && texParams->wrapT == GL_CLAMP_TO_EDGE),
+	NSAssert( (_width == ccNextPOT(_width) || texParams->wrapS == GL_CLAMP_TO_EDGE) &&
+				(_height == ccNextPOT(_height) || texParams->wrapT == GL_CLAMP_TO_EDGE),
 			@"GL_CLAMP_TO_EDGE should be used in NPOT dimensions");
 
 	ccGLBindTexture2D( _name );
