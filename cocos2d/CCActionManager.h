@@ -45,6 +45,34 @@ typedef struct _hashElement
 } tHashElement;
 
 
+//
+// Action target protocols
+//
+/**
+ * Action targets that implement any of these protocols can customize how the action manager interacts with them
+ * and the selectors scheduled for them.
+ */
+@protocol CCTimeScalable<NSObject>
+
+@optional
+
+/** A tag used to specify properties and behavior */
+@property(nonatomic, readwrite, assign) NSInteger tag;
+
+/** Modifies the time of all callbacks scheduled for this target and its children.
+ You can use this property to create a 'slow motion' or 'fast forward' effect.
+ Default is 1.0. To create a 'slow motion' effect, use values below 1.0.
+ To create a 'fast forward' effect, use values higher than 1.0.
+ @warning It will affect EVERY scheduled selector / action that has this object or one of its children as its target.
+ */
+@property(nonatomic, readwrite) ccTime timeScale;
+
+/** A scalable action can optionally have a parent.
+ * This means it inherits all time scaling that affects the parent and combines it with the scaling applied to itself. */
+@property(nonatomic, readwrite, assign) id parent;
+
+@end
+
 /** CCActionManager the object that manages all the actions.
  Normally you won't need to use this API directly. 99% of the cases you will use the CCNode interface, which uses this object.
  But there are some cases where you might need to use this API directly:

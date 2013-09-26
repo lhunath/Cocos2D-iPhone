@@ -349,12 +349,11 @@
 }
 
 + (float)timeScaleForTarget:(id)target {
-    
-    if ([target respondsToSelector:@selector(tag)])
-        if ([target tag] == kCCNodeTagIgnoreTimeScale)
-            return 1.0f;
 
     float timeScale = 1.0f;
+    if ([target respondsToSelector:@selector(tag)] && [target tag] == kCCNodeTagIgnoreTimeScale)
+        return timeScale;
+
     if ([target respondsToSelector:@selector(timeScale)])
         timeScale *= [target timeScale];
     if ([target respondsToSelector:@selector(parent)])
