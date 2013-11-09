@@ -445,6 +445,20 @@ GLToClipTransform(kmMat4 *transformOut)
 //		[_delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 //}
 
+- (NSUInteger)supportedInterfaceOrientations {
+
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+
+    return UIInterfaceOrientationLandscapeRight;
+}
+
+- (BOOL)prefersStatusBarHidden {
+
+    return YES;
+}
 
 -(void) viewWillAppear:(BOOL)animated
 {
