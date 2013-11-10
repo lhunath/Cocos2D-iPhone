@@ -139,6 +139,9 @@ enum {
 
 -(void) dealloc
 {
+    [_selectedItem release];
+    _selectedItem = nil;
+    
 	[super dealloc];
 }
 
@@ -157,6 +160,7 @@ enum {
 	{
 		[_selectedItem unselected];
 		_state = kCCMenuStateWaiting;
+        [_selectedItem release];
 		_selectedItem = nil;
 	}
 	[super onExit];
@@ -210,7 +214,8 @@ enum {
 		if( c.visible == NO )
 			return NO;
 
-	_selectedItem = [self itemForTouch:touch];
+    [_selectedItem release];
+	_selectedItem = [[self itemForTouch:touch] retain];
 	[_selectedItem selected];
 
 	if( _selectedItem ) {
@@ -247,7 +252,8 @@ enum {
 
 	if (currentItem != _selectedItem) {
 		[_selectedItem unselected];
-		_selectedItem = currentItem;
+        [_selectedItem release];
+		_selectedItem = [currentItem retain];
 		[_selectedItem selected];
 	}
 }
@@ -298,7 +304,8 @@ enum {
 	if( ! _visible || ! _enabled)
 		return NO;
 
-	_selectedItem = [self itemForMouseEvent:event];
+    [_selectedItem release];
+	_selectedItem = [[self itemForMouseEvent:event] retain];
 	[_selectedItem selected];
 
 	if( _selectedItem ) {
@@ -319,6 +326,7 @@ enum {
 
 		if (currentItem != _selectedItem) {
 			[_selectedItem unselected];
+            [_selectedItem release];
 			_selectedItem = currentItem;
 			[_selectedItem selected];
 		}
