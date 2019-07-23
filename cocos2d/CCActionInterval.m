@@ -472,7 +472,7 @@
 {
 	[super startWithTarget:aTarget];
 	
-	startAngle_ = [target_ rotation];
+	startAngle_ = [aTarget rotation];
 	if (startAngle_ > 0)
 		startAngle_ = fmodf(startAngle_, 360.0f);
 	else
@@ -520,7 +520,7 @@
 -(void) startWithTarget:(id)aTarget
 {
 	[super startWithTarget:aTarget];
-	startAngle_ = [target_ rotation];
+	startAngle_ = [(CCNode *)aTarget rotation];
 }
 
 -(void) update: (ccTime) t
